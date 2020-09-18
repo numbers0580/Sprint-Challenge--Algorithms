@@ -30,10 +30,10 @@ the immediate floor below me and the egg broke from the immediate floor above me
 below me, else it's this floor that I got to after log n iterations.
 
 code:
+```
 def dodo_eggs(ground=0, top=1658, elevator="Broken"):
     # Happy climbing!
     test_floor = (ground + top) // 2
-
     if egg == broken:
         if test_floor - ground > 1:
             dodo_eggs(test_floor + 1, top)
@@ -44,6 +44,7 @@ def dodo_eggs(ground=0, top=1658, elevator="Broken"):
             dodo_eggs(ground, test_floor - 1)
         else:
             return test_floor
+```
 
 As you can clearly see from the code above, the runtime would be O(log n), since while it looks like a lot of floors will be tested, we'll never actually test ALL floors
 for buildings > 2 floors
