@@ -96,17 +96,67 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        # initial pickup
+        print(f"START: Item is {self._item}, Pos = {self._position}, List = {self._list}")
+        self.swap_item()
+        print(f"INIT: Item is {self._item}, Pos = {self._position}, List = {self._list}")
+        # Have the robot turn on light to indicate it needed to swap an item
+        self.set_light_on()
+
+        while self.light_is_on():
+            # reset boolean (light)
+            self.set_light_off()
+
+            while self.can_move_right():
+                self.move_right()
+                if self.compare_item() == -1:
+                    # Found larger number while moving right. Swap items
+                    print(f"(R) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                    self.swap_item()
+                    print(f"(R) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                    # Since an item was swapped, turn light on
+                    self.set_light_on()
+
+            # After debugging, I see that the robot should now have the highest possible number at this point and is at the end of the list, force a swap here
+            if self.compare_item() == 1:
+                print(f"(R) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                self.swap_item()
+                print(f"(R) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                self.set_light_on()
+
+            while self.can_move_left():
+                self.move_left()
+                if self.compare_item() == 1:
+                    # Found smaller number while moving left. Swap items
+                    print(f"(L) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                    self.swap_item()
+                    print(f"(L) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+                    # Since an item was swapped, turn light on
+                    self.set_light_on()
+
+            # Should be back to where the robot first dropped off the None, force a swap here
+            print(f"Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+            self.swap_item()
+            print(f"Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
+            self.set_light_off()
+            # I'm finding the above 3 lines of code runs twice back-to-back
+            # After assessing code, I can only conclude that main while-loop arrives here, performs swap, the light was on, runs through loop again never swapping right or left again
+            # and gets back here and performs final swap again. Need a way to limit this to run only once.
+            # That's easy, turn the light off. Can't believe it took me a few minutes to figure that one out.
 
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
+    short_l = [3, 13, 7, 25, 32, 21, 38, 18, 12, 5]
+    # to the right: [None, 3, 7, 13, 25, 21, 32, 18, 12, 5], 38 in hand
+    # to the left: [None, 5, 7, 13, 25, 21, 32, 18, 12, 38], 3 in hand
+    # to the right: [], I think I realized I may be missing something in my logic here. Gonna use prints to check sort method
+    # sorted: [3, 5, 7, 12, 13, 18, 21, 25, 32, 38]
     l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
 
-    robot = SortingRobot(l)
+    robot = SortingRobot(short_l)
 
     robot.sort()
     print(robot._list)
