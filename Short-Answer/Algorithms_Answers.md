@@ -36,12 +36,12 @@ def dodo_eggs(ground=0, top=1658, elevator="Broken"):
     test_floor = (ground + top) // 2
     if egg == broken:
         if test_floor - ground > 1:
-            dodo_eggs(test_floor + 1, top)
+            dodo_eggs(ground, test_floor - 1)
         else:
-            return test_floor - 1
+            return ground
     else:
         if top - test_floor > 1:
-            dodo_eggs(ground, test_floor - 1)
+            dodo_eggs(test_floor + 1, top)
         else:
             return test_floor
 ```
