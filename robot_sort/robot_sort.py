@@ -1,3 +1,4 @@
+# import time
 class SortingRobot:
     def __init__(self, l):
         """
@@ -96,53 +97,60 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # initial pickup
-        print(f"START: Item is {self._item}, Pos = {self._position}, List = {self._list}")
-        self.swap_item()
-        print(f"INIT: Item is {self._item}, Pos = {self._position}, List = {self._list}")
-        # Have the robot turn on light to indicate it needed to swap an item
         self.set_light_on()
 
         while self.light_is_on():
-            # reset boolean (light)
-            self.set_light_off()
+            # initial pickup
+            print(f"START: Item is {self._item}, Pos = {self._position}, List = {self._list}")
+            self.swap_item()
+            print(f"INIT: Item is {self._item}, Pos = {self._position}, List = {self._list}")
+            # time.sleep(1)
 
             while self.can_move_right():
                 self.move_right()
                 if self.compare_item() == -1:
-                    # Found larger number while moving right. Swap items
+                    # Robot holding smaller number, swap here
                     print(f"(R) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
                     self.swap_item()
                     print(f"(R) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
-                    # Since an item was swapped, turn light on
-                    self.set_light_on()
+                    # time.sleep(1)
 
             # After debugging, I see that the robot should now have the highest possible number at this point and is at the end of the list, force a swap here
             if self.compare_item() == 1:
                 print(f"(R) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
                 self.swap_item()
                 print(f"(R) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
-                self.set_light_on()
+                # time.sleep(1)
+                # self.set_light_on()
 
-            while self.can_move_left():
+            # Included None test below to track movement of None through the list
+            while self.can_move_left() and self.compare_item() != None:
                 self.move_left()
                 if self.compare_item() == 1:
-                    # Found smaller number while moving left. Swap items
+                    # Robot holding larger number, swap here
                     print(f"(L) Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
                     self.swap_item()
                     print(f"(L) Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
-                    # Since an item was swapped, turn light on
-                    self.set_light_on()
+                    # time.sleep(1)
+                    # self.set_light_on()
 
             # Should be back to where the robot first dropped off the None, force a swap here
             print(f"Pre-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
             self.swap_item()
             print(f"Post-Swap: {self._item}, Pos = {self._position}, List = {self._list}")
-            self.set_light_off()
+            # time.sleep(1)
+            # self.set_light_off()
             # I'm finding the above 3 lines of code runs twice back-to-back
             # After assessing code, I can only conclude that main while-loop arrives here, performs swap, the light was on, runs through loop again never swapping right or left again
             # and gets back here and performs final swap again. Need a way to limit this to run only once.
             # That's easy, turn the light off. Can't believe it took me a few minutes to figure that one out.
+            # Ok, the list looks better, but still improperly sorted in a couple places
+            # Ignoring my solution about the light for now, leaving the swap after the second loop kicks out at the None to move that None and move back to the right
+            self.move_right()
+
+            # At some point, the None will be at the end and the 2nd while loop will kick out with the robot unable to move to the right -- The list should be fully sorted by now
+            if self.can_move_right() == False:
+                self.set_light_off()
 
 
 if __name__ == "__main__":
